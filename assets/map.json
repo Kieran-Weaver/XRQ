@@ -1,0 +1,46 @@
+{
+	"rooms": [
+		{
+			"name":"Test Room 1",
+			"info":"This is a Test Room. In fact, it is the first one",
+			"exits": [null, null, null, "Test Room 2"],
+		},
+		{
+			"name":"Test Room 2",
+			"info":"This is a Test Room. In fact, it is the second one",
+			"exits": [null, "Test Room 1", null, "Test Room 2"],
+		}
+	],
+	"npcs": [
+		{
+			"name":"Donson",
+			"entry":"Have no fear, Donson is here!",
+			"maxhp":1,
+			"moves": ["combust", "charge"],
+			"drops": {"none": 9, "soup": 1}
+		}
+	],
+	"moves": [
+		{
+			"name":"combust",
+			"base":1,
+			"charge":0,
+			"weight":20
+		},
+		{
+			"name":"charge",
+			"base":0,
+			"charge":4,
+			"weight":10
+		}
+	],
+	"items": [
+		{
+			"name":"soup",
+			"atk":2,
+			"cost":1,
+			"hp":0,
+			"sp":10
+		}
+	]
+}
