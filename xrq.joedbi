@@ -1,0 +1,22 @@
+create_table item
+add_field item name string
+
+create_table room
+add_field room name string
+add_field room items references item
+
+create_table npc
+add_field npc name string
+add_field npc room references room
+
+create_table player
+add_field player name string
+add_field player inventory references item
+add_field player room references room
+add_field player sequence int32
+add_field player maxhp int32
+add_field player maxsp int32
+add_field player atk int32
+add_field player xp int32
+add_field player level int32
+add_field player money int32

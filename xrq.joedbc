@@ -1,0 +1,4 @@
+namespace xrq
+create_unique_index room_by_name room name
+create_unique_index player_by_room player room
+generate_c_wrapper
