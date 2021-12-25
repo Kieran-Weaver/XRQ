@@ -2,6 +2,8 @@
 #define DATA_H
 #include "gen/xrq_wrapper.h"
 #include "../submodules/json_struct/include/json_struct.h"
+#include <unordered_map>
+#include <vector>
 
 struct Obj {
 	std::string name;
@@ -14,8 +16,6 @@ struct Obj {
 		BATTLE
 	} state;
 };
-
-using Exit = std::optional<std::string>;
 
 struct Player : public Obj {
 	xrq_id_of_player joedb_ptr;
@@ -30,7 +30,7 @@ struct NPC: public Obj {
 	std::string entry;
 	uint32_t maxhp;
 	std::vector<std::string> moves;
-	std::map<std::string, uint32_t> drops;
+	std::unordered_map<std::string, uint32_t> drops;
 
 	JS_OBJ(name, entry, maxhp, moves, drops);
 };
@@ -39,8 +39,8 @@ struct Room {
 	xrq_id_of_room joedb_ptr;
 	std::string name;
 	std::string info;
-	std::vector<Exit> exits;
-	std::map<std::string, Obj> objs;
+	std::vector<std::string> exits;
+	std::unordered_map<std::string, Obj> objs;
 	
 	JS_OBJ(name, info, exits);
 };
@@ -64,4 +64,12 @@ struct Item {
 	JS_OBJ(name, atk, cost, hp, sp);
 };
 
+struct JsonData {
+	std::vector<Room> rooms;
+	std::vector<NPC> npcs;
+	std::vector<Move> moves;
+	std::vector<Item> items;
+	
+	JS_OBJ(rooms, npcs, moves, items);
+};
 #endif

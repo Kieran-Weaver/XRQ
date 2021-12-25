@@ -1,0 +1,3 @@
+[submodule "submodules/json_struct"]
+	path = submodules/json_struct
+	url = https://github.com/jorgen/json_struct.git
