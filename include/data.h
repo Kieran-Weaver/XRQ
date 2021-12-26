@@ -7,6 +7,7 @@
 
 struct Obj {
 	std::string name;
+	std::string room;
 	enum {
 		PLAYER,
 		NPC
@@ -32,7 +33,7 @@ struct NPC: public Obj {
 	std::vector<std::string> moves;
 	std::unordered_map<std::string, uint32_t> drops;
 
-	JS_OBJ(name, entry, maxhp, moves, drops);
+	JS_OBJ(name, room, entry, maxhp, moves, drops);
 };
 
 struct Room {

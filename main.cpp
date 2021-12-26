@@ -2,6 +2,7 @@
 #include "include/gen/xrq.h"
 #include <iostream>
 #include <fstream>
+#define INITIAL_ITEM_SIZE 4
 
 std::string readWholeFile(const char* filename) {
 	std::ifstream in(filename, std::ios::in | std::ios::binary);
@@ -29,7 +30,9 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	
-	for (const auto& room : data.rooms) {
+	for (auto& room : data.rooms) {
+		auto items = db.new_vector_of_item(INITIAL_ITEM_SIZE);
+		room.joedb_ptr = db.new_room(room.name, items);
 		std::cout << "name: " << room.name << std::endl;
 		std::cout << "info: " << room.info << std::endl;
 		std::cout << "exits: " << std::endl;
@@ -37,4 +40,11 @@ int main(int argc, char **argv) {
 			std::cout << exit << std::endl;
 		}
 	}
+	
+	for (auto& npc : data.npcs) {
+		npc.joedb_ptr = db.new_npc(npc.name, db.find_room_by_name(npc.room));
+	}
+	
+	db.checkpoint_full_commit();
+	return 0;
 }

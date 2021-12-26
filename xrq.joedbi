@@ -1,6 +1,10 @@
+create_table item
+add_field item name string
+add_field item num int32
+
 create_table room
 add_field room name string
-add_field room items string
+add_field room items references item
 
 create_table npc
 add_field npc name string
@@ -8,7 +12,7 @@ add_field npc room references room
 
 create_table player
 add_field player name string
-add_field player items string
+add_field player items references item
 add_field player room references room
 add_field player sequence int32
 add_field player maxhp int32

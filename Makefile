@@ -1,4 +1,4 @@
-CXX=g++ -Wall -Wextra -Wpedantic
+CXX=g++ -Wall -Wextra -Wno-unused-parameter
 CXXFLAGS=-Og -std=c++17
 TARGET=xrq
 INC_FLAGS := -I include
@@ -19,10 +19,7 @@ include/gen/xrq.cpp: xrq.joedbc xrq.joedbi
 build:
 	mkdir -p build build/include/gen
 
-./build/%.o : ./%.cpp build
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
-
-./build/%.o : ./%.c build
+./build/%.o : ./%.cpp build include/gen/xrq.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 clean:
