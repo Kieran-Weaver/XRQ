@@ -66,6 +66,8 @@ struct Item {
 };
 
 struct JsonData {
+	uint32_t error;
+	std::string error_string;
 	std::vector<Room> rooms;
 	std::vector<NPC> npcs;
 	std::vector<Move> moves;
