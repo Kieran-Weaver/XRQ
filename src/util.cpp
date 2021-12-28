@@ -28,6 +28,7 @@ JsonData db_init(xrq::Generic_File_Database& db, std::string_view filename, uint
 	if (context.parseTo(data) != JS::Error::NoError) {
 		data.error_string = context.makeErrorString();
 		data.error = 1;
+		return data;
 	}
 	
 	for (auto& room : data.rooms) {
