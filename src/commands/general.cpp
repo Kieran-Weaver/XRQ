@@ -10,10 +10,10 @@ int rq_start::operator()(RQState& state, std::string_view input) {
 
 	state.player.name = input;
 	state.player.room = this->room;
-	auto items = state.db.new_vector_of_item(this->inv_size);
-	auto room_ref = state.db.find_room_by_name(this->room);
+	auto items = db.new_vector_of_item(this->inv_size);
+	auto room_ref = db.find_room_by_name(this->room);
 
-	state.player.joedb_ptr = state.db.new_player(
+	state.player.joedb_ptr = this->db.new_player(
 		state.player.name, // name
 		items, // items
 		room_ref, // room

@@ -9,22 +9,22 @@
 #define INV_SIZE 10
 
 int main(int argc, char **argv) {
-	RQState state = {xrq::File_Database("xrq.joedb"), {}, {}, false, false};
-	state.data = db_init(state.db, "assets/map.json", INV_SIZE);
+	xrq::File_Database db = xrq::File_Database("xrq.joedb");
+	RQState state = state_init(db, "assets/map.json", INV_SIZE);
 	cmdset<RQState> uninit_commands = {};
 	cmdset<RQState> map_commands = {};
 	std::string command;
 	
-	uninit_commands["join"] = rq_start("Test Room 1", INV_SIZE);
+	uninit_commands["join"] = rq_start(db, "Test Room 1", INV_SIZE);
 	uninit_commands["exit"] = rq_exit;
 	map_commands["exit"] = rq_exit;
 
-	if (state.data.error) {
-		std::cerr << state.data.error_string << std::endl;
+	if (state.error) {
+		std::cerr << state.error_string << std::endl;
 		return -1;
 	}
 	
-	state.db.checkpoint_full_commit();
+	db.checkpoint_full_commit();
 	
 	while (!state.done) {
 		std::cout << "> " << std::flush;
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 	}
 
 	std::cout << "Exited successfully" << std::endl;
-	state.db.checkpoint_full_commit();
+	db.checkpoint_full_commit();
 
 	return 0;
 }
