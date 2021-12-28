@@ -42,3 +42,18 @@ JsonData db_init(xrq::Generic_File_Database& db, std::string_view filename, uint
 	
 	return data;
 }
+
+std::pair<std::string, std::string> split_cmd(const std::string& cmd) {
+	std::pair<std::string, std::string> parts;
+
+	auto first_space = cmd.find_first_of(' ');
+	if (first_space == std::string::npos) {
+		parts.first = cmd;
+		parts.second = "";
+	} else {
+		parts.first = cmd.substr(0, first_space);
+		parts.second = cmd.substr(first_space + 1);
+	}
+	
+	return parts;
+}

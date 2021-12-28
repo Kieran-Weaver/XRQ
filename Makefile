@@ -17,7 +17,7 @@ include/gen/xrq.cpp: xrq.joedbc xrq.joedbi
 	make -C include/gen
 
 build:
-	mkdir -p build build/include/gen build/src
+	mkdir -p build build/include/gen build/src/commands
 
 ./build/%.o : ./%.cpp build include/gen/xrq.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
