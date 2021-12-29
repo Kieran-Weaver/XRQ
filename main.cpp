@@ -5,12 +5,17 @@
 #include "include/commands/general.h"
 #include "include/rqstate.h"
 #include <iostream>
+#include <filesystem>
 
 #define INV_SIZE 10
 
+constexpr const char* db_file = "xrq.joedb";
+namespace fs = std::filesystem;
+
 int main(int argc, char **argv) {
-	xrq::File_Database db = xrq::File_Database("xrq.joedb");
-	RQState state = state_init(db, "assets/map.json", INV_SIZE);
+	bool load = fs::exists(db_file);
+	xrq::File_Database db = xrq::File_Database(db_file);
+	RQState state = state_init(db, load, "assets/map.json", INV_SIZE);
 	cmdset<RQState> uninit_commands = {};
 	cmdset<RQState> map_commands = {};
 	std::string command;
@@ -27,6 +32,20 @@ int main(int argc, char **argv) {
 	if (state.error) {
 		std::cerr << state.error_string << std::endl;
 		return -1;
+	}
+
+	if (load) {
+		for (auto player : db.get_player_table()) {
+			auto name = db.get_name(player);
+			auto& splayer = state.player;
+			splayer.joedb_ptr = player;
+			splayer.name = name;
+			splayer.room = db.get_name(db.get_room(player));
+			splayer.hp = db.get_maxhp(player);
+			splayer.sp = db.get_maxsp(player);
+			splayer.msgq = {};
+		}
+		state.initialized = true;
 	}
 	
 	db.checkpoint_full_commit();

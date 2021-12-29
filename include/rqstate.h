@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "gen/xrq_wrapper.h"
+#include "gen/xrq.h"
 
 struct Obj {
 	std::string name;
@@ -13,7 +13,7 @@ struct Obj {
 };
 
 struct Room {
-	xrq_id_of_room joedb_ptr;
+	xrq::id_of_room joedb_ptr;
 	std::string name;
 	std::string info;
 	std::vector<std::string> exits;
@@ -21,7 +21,7 @@ struct Room {
 };
 
 struct Player {
-	xrq_id_of_player joedb_ptr;
+	xrq::id_of_player joedb_ptr;
 	std::string name;
 	std::string room;
 	uint32_t hp;
@@ -31,7 +31,7 @@ struct Player {
 };
 
 struct NPC {
-	xrq_id_of_npc joedb_ptr;
+	xrq::id_of_npc joedb_ptr;
 	std::string name;
 	std::string room;
 	uint32_t hp;

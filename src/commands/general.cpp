@@ -82,6 +82,7 @@ int rq_move::operator()(RQState& state, std::string_view input) {
 	
 	auto& new_room = state.rooms[state.player.room];
 	new_room.objs[state.player.name] = obj;
+	db.set_room(state.player.joedb_ptr, db.find_room_by_name(dest));
 	state.player.msgq.push_back(new_room.info);
 	
 	return 1;

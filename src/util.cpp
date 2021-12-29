@@ -20,7 +20,9 @@ std::string readWholeFile(std::string_view filename) {
 	return contents;
 }
 
-RQState state_init(xrq::Generic_File_Database& db, std::string_view filename, uint32_t item_size) {
+RQState state_init(xrq::Generic_File_Database& db, bool load, \
+	std::string_view filename, uint32_t item_size) {
+	
 	std::string json = readWholeFile(filename);
 	JS::ParseContext context(json);
 	JsonData data{};
@@ -35,17 +37,21 @@ RQState state_init(xrq::Generic_File_Database& db, std::string_view filename, ui
 	
 	for (auto& jroom : data.rooms) {
 		auto& room = state.rooms[jroom.name];
-		auto items = db.new_vector_of_item(item_size);
-		room.joedb_ptr = db.new_room(jroom.name, items);
 		room.name = jroom.name;
 		room.info = jroom.info;
 		room.exits = jroom.exits;
 		room.objs = {};
+
+		if (load) {
+			room.joedb_ptr = db.find_room_by_name(jroom.name);
+		} else {
+			auto items = db.new_vector_of_item(item_size);
+			room.joedb_ptr = db.new_room(jroom.name, items);
+		}
 	}
 	
 	for (auto& jnpc : data.npcs) {
 		auto& npc = state.npcs[jnpc.name];
-		npc.joedb_ptr = db.new_npc(jnpc.name, db.find_room_by_name(jnpc.room));
 		npc.name = jnpc.name;
 		npc.room = jnpc.room;
 		npc.maxhp = jnpc.maxhp;
@@ -57,6 +63,12 @@ RQState state_init(xrq::Generic_File_Database& db, std::string_view filename, ui
 			Obj::NPC_,
 			Obj::MAP
 		};
+		
+		if (load) {
+			npc.joedb_ptr = db.find_npc_by_name(jnpc.name);
+		} else {
+			npc.joedb_ptr = db.new_npc(jnpc.name, db.find_room_by_name(jnpc.room));
+		}
 	}
 	
 	for (auto& jitem : data.items) {

@@ -11,7 +11,8 @@ namespace xrq {
 class RQState;
 
 std::string readWholeFile(std::string_view filename);
-RQState state_init(xrq::Generic_File_Database& db, std::string_view filename, uint32_t item_size);
+RQState state_init(xrq::Generic_File_Database& db, bool load, \
+	std::string_view filename, uint32_t item_size);
 std::pair<std::string, std::string> split_cmd(const std::string& cmd);
 
 #endif

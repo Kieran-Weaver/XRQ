@@ -3,7 +3,7 @@ CXXFLAGS=-Og -std=c++17
 TARGET=xrq
 INC_FLAGS := -I include
 CPPFLAGS = $(INC_FLAGS) -MT $@ -MMD -MP -MF build/$*.d
-SRCS := main.cpp include/gen/xrq.cpp include/gen/xrq_wrapper.cpp $(shell find src/ -path "*.cpp")
+SRCS := main.cpp include/gen/xrq.cpp $(shell find src/ -path "*.cpp")
 OBJS := $(patsubst %.cpp, ./build/%.o, $(SRCS))
 DEPS := $(OBJS:.o=.d)
 LDFLAGS := -ljoedb
