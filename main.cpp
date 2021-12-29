@@ -18,6 +18,11 @@ int main(int argc, char **argv) {
 	uninit_commands["join"] = rq_start(db, "Test Room 1", INV_SIZE);
 	uninit_commands["exit"] = rq_exit;
 	map_commands["exit"] = rq_exit;
+	map_commands["north"] = rq_move(db, rq_move::NORTH);
+	map_commands["south"] = rq_move(db, rq_move::SOUTH);
+	map_commands["east"] = rq_move(db, rq_move::EAST);
+	map_commands["west"] = rq_move(db, rq_move::WEST);
+	auto generic_move = rq_move(db, rq_move::GENERIC);
 
 	if (state.error) {
 		std::cerr << state.error_string << std::endl;
@@ -27,6 +32,10 @@ int main(int argc, char **argv) {
 	db.checkpoint_full_commit();
 	
 	while (!state.done) {
+		for (auto& msg : state.player.msgq) {
+			std::cout << msg << "\n";
+		}
+		state.player.msgq.clear();
 		std::cout << "> " << std::flush;
 		std::getline(std::cin, command);
 
@@ -34,19 +43,23 @@ int main(int argc, char **argv) {
 		
 		cmdset<RQState>& commands = state.initialized ? map_commands : uninit_commands;
 		int errcode = prefix_cmd(commands, state, cmd, arg);
-			
+		if (errcode == -1) {
+			errcode = generic_move(state, command);
+		}
+		
 		switch (errcode) {
+			case -2: // No command
+				break;
 			case -1:
-				std::cout << "Invalid command: " << cmd << std::endl;
+				state.player.msgq.push_back("Invalid command: " + cmd);
 				break;
 			case 0:
-				std::cout << "Command failed" << std::endl;
+				state.player.msgq.push_back("Command failed");
 				break;
-			case 1:
-				std::cout << "Success!" << std::endl;
+			case 1: // Successful command
 				break;
 			default:
-				std::cout << "Unknown error" << std::endl;
+				state.player.msgq.push_back("Unknown error");
 				break;
 		}
 	}

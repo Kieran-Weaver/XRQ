@@ -8,7 +8,6 @@
 
 struct Obj {
 	std::string name;
-	std::string room;
 	enum { PLAYER, NPC_, ITEM } type;
 	enum { MAP, BATTLE } state;
 };
@@ -21,15 +20,20 @@ struct Room {
 	std::unordered_map<std::string, Obj> objs;
 };
 
-struct Player : public Obj {
+struct Player {
 	xrq_id_of_player joedb_ptr;
+	std::string name;
+	std::string room;
 	uint32_t hp;
 	uint32_t sp;
+	std::vector<std::string> msgq;
 //	TODO: add buffs
 };
 
-struct NPC : public Obj {
+struct NPC {
 	xrq_id_of_npc joedb_ptr;
+	std::string name;
+	std::string room;
 	uint32_t hp;
 	std::string entry;
 	uint32_t maxhp;
@@ -37,7 +41,7 @@ struct NPC : public Obj {
 	std::unordered_map<std::string, uint32_t> drops;
 };
 
-struct Item : public Obj {
+struct Item {
 	std::string name;
 	int32_t atk;
 	uint32_t cost;

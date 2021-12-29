@@ -52,6 +52,11 @@ RQState state_init(xrq::Generic_File_Database& db, std::string_view filename, ui
 		npc.hp = npc.maxhp;
 		npc.moves = jnpc.moves;
 		npc.drops = jnpc.drops;
+		state.rooms[npc.room].objs[npc.name] = {
+			npc.name,
+			Obj::NPC_,
+			Obj::MAP
+		};
 	}
 	
 	for (auto& jitem : data.items) {

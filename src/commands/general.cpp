@@ -7,7 +7,7 @@ int rq_start::operator()(RQState& state, std::string_view input) {
 	if (state.initialized) return 0;
 
 	state.player = {};
-
+	state.initialized = true;
 	state.player.name = input;
 	state.player.room = this->room;
 	auto items = db.new_vector_of_item(this->inv_size);
@@ -28,15 +28,61 @@ int rq_start::operator()(RQState& state, std::string_view input) {
 	
 	state.player.hp = 10;
 	state.player.sp = 10;
-	state.player.type = Obj::PLAYER;
-	state.player.state = Obj::MAP;
 
+	state.rooms[state.player.room].objs[state.player.name] = {
+		state.player.name,
+		Obj::PLAYER,
+		Obj::MAP
+	};
+
+	state.player.msgq.push_back("Welcome to XRQ!");
+	state.player.msgq.push_back(state.rooms[state.player.room].info);
 	return 1;
 }
 
 int rq_exit(RQState& state, std::string_view input) {
 	state.done = true;
 	(void)input;
+	
+	return 1;
+}
+
+int rq_move::operator()(RQState& state, std::string_view input) {
+	auto& room = state.rooms[state.player.room];
+	auto  obj = room.objs[state.player.name];
+
+	std::string dest = "";
+	
+	switch (this->move) {
+	case NORTH:
+	case SOUTH:
+	case EAST:
+	case WEST:
+		dest = room.exits[this->move];
+		break;
+	case GENERIC:
+		if (input.empty()) return -2;
+		for (const auto& name : room.exits) {
+			if (name.compare(0, input.size(), input) == 0) {
+				dest = name;
+				break;
+			}
+		}
+		break;
+	default:
+		return -1;
+		break;
+	}
+	
+	if (dest.empty()) return -1;
+	if (dest == "null") return 0;
+	
+	room.objs.erase(state.player.name);
+	state.player.room = dest;
+	
+	auto& new_room = state.rooms[state.player.room];
+	new_room.objs[state.player.name] = obj;
+	state.player.msgq.push_back(new_room.info);
 	
 	return 1;
 }
