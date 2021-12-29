@@ -7,6 +7,7 @@ int rq_start::operator()(RQState& state, std::string_view input) {
 	if (state.initialized) return 0;
 
 	state.player = {};
+	state.player.items = ItemSet(this->inv_size);
 	state.initialized = true;
 	state.player.name = input;
 	state.player.room = this->room;
@@ -43,7 +44,7 @@ int rq_start::operator()(RQState& state, std::string_view input) {
 int rq_exit(RQState& state, std::string_view input) {
 	state.done = true;
 	(void)input;
-	
+		
 	return 1;
 }
 
@@ -84,6 +85,12 @@ int rq_move::operator()(RQState& state, std::string_view input) {
 	new_room.objs[state.player.name] = obj;
 	db.set_room(state.player.joedb_ptr, db.find_room_by_name(dest));
 	state.player.msgq.push_back(new_room.info);
+	if (new_room.items.size()) {
+		state.player.msgq.push_back("Items: ");
+		for (auto it = new_room.items.cbegin(); it != new_room.items.cend(); it++) {
+			state.player.msgq.push_back(it->first + " x " + std::to_string(it->second));
+		}
+	}
 	
 	return 1;
 }

@@ -19,9 +19,10 @@ struct JsonNPC {
 struct JsonRoom {
 	std::string name;
 	std::string info;
+	std::string spawner;
 	std::vector<std::string> exits;
 
-	JS_OBJ(name, info, exits);
+	JS_OBJ(name, spawner, info, exits);
 };
 
 struct JsonMove {

@@ -34,19 +34,36 @@ RQState state_init(xrq::Generic_File_Database& db, bool load, \
 		state.error = true;
 		return state;
 	}
+
+	for (auto& jitem : data.items) {
+		auto& item = state.items[jitem.name];
+		item.name = jitem.name;
+		item.cost = jitem.cost;
+		item.hp = jitem.hp;
+		item.sp = jitem.sp;
+	}
 	
 	for (auto& jroom : data.rooms) {
 		auto& room = state.rooms[jroom.name];
 		room.name = jroom.name;
 		room.info = jroom.info;
 		room.exits = jroom.exits;
+		room.spawner = jroom.spawner;
 		room.objs = {};
+		room.items = ItemSet(item_size);
 
 		if (load) {
 			room.joedb_ptr = db.find_room_by_name(jroom.name);
 		} else {
 			auto items = db.new_vector_of_item(item_size);
 			room.joedb_ptr = db.new_room(jroom.name, items);
+		}
+		
+		if ((room.spawner == "null") || (state.items.find(room.spawner) == state.items.end())){
+			room.spawner = "";
+		} else if (room.items[room.spawner] == 0) {
+			room.items += room.spawner;
+			room.items.serialize(db, db.get_items(room.joedb_ptr), item_size);
 		}
 	}
 	
@@ -71,17 +88,8 @@ RQState state_init(xrq::Generic_File_Database& db, bool load, \
 		}
 	}
 	
-	for (auto& jitem : data.items) {
-		auto& item = state.items[jitem.name];
-		item.name = jitem.name;
-		item.cost = jitem.cost;
-		item.hp = jitem.hp;
-		item.sp = jitem.sp;
-	}
-	
 	state.initialized = false;
 	state.done = false;
-	state.player = {};
 	
 	return state;
 }

@@ -1,9 +1,9 @@
 #include "include/data.h"
 #include "include/util.h"
-#include "include/gen/xrq.h"
 #include "include/parse.h"
-#include "include/commands/general.h"
+#include "include/gen/xrq.h"
 #include "include/rqstate.h"
+#include "include/commands.h"
 #include <iostream>
 #include <filesystem>
 
@@ -27,6 +27,10 @@ int main(int argc, char **argv) {
 	map_commands["south"] = rq_move(db, rq_move::SOUTH);
 	map_commands["east"] = rq_move(db, rq_move::EAST);
 	map_commands["west"] = rq_move(db, rq_move::WEST);
+	map_commands["get"] = rq_item(db, rq_item::GET);
+	map_commands["drop"] = rq_item(db, rq_item::DROP);
+	map_commands["destroy"] = rq_item(db, rq_item::DESTROY);
+	map_commands["inventory"] = rq_inventory;
 	auto generic_move = rq_move(db, rq_move::GENERIC);
 
 	if (state.error) {
@@ -43,6 +47,8 @@ int main(int argc, char **argv) {
 			splayer.room = db.get_name(db.get_room(player));
 			splayer.hp = db.get_maxhp(player);
 			splayer.sp = db.get_maxsp(player);
+			state.player.items = ItemSet(INV_SIZE);
+			state.player.items.deserialize(db, db.get_items(state.player.joedb_ptr), INV_SIZE);
 			splayer.msgq = {};
 		}
 		state.initialized = true;
@@ -84,6 +90,7 @@ int main(int argc, char **argv) {
 	}
 
 	std::cout << "Exited successfully" << std::endl;
+	state.player.items.serialize(db, db.get_items(state.player.joedb_ptr), INV_SIZE);
 	db.checkpoint_full_commit();
 
 	return 0;

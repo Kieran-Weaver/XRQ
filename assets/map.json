@@ -3,11 +3,13 @@
 		{
 			"name":"Test Room 1",
 			"info":"This is a Test Room. In fact, it is the first one",
+			"spawner":null,
 			"exits": [null, null, null, "Test Room 2"]
 		},
 		{
 			"name":"Test Room 2",
 			"info":"This is a Test Room. In fact, it is the second one",
+			"spawner":"soup",
 			"exits": [null, "Test Room 1", null, "Test Room 2"]
 		}
 	],

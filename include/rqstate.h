@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "gen/xrq.h"
+#include "itemset.h"
 
 struct Obj {
 	std::string name;
@@ -16,8 +17,10 @@ struct Room {
 	xrq::id_of_room joedb_ptr;
 	std::string name;
 	std::string info;
+	std::string spawner;
 	std::vector<std::string> exits;
 	std::unordered_map<std::string, Obj> objs;
+	ItemSet items;
 };
 
 struct Player {
@@ -27,6 +30,7 @@ struct Player {
 	uint32_t hp;
 	uint32_t sp;
 	std::vector<std::string> msgq;
+	ItemSet items;
 //	TODO: add buffs
 };
 
